@@ -266,18 +266,18 @@ public class AdamStandardShaderGUI : ShaderGUI
 
 	void BlendModePopup()
 	{
-		EditorGUI.showMixedValue = blendMode.hasMixedValue;
-		var mode = (BlendMode)blendMode.floatValue;
+		// EditorGUI.showMixedValue = blendMode.hasMixedValue;
+		// var mode = (BlendMode)blendMode.floatValue;
 
-		EditorGUI.BeginChangeCheck();
-		mode = (BlendMode)EditorGUILayout.Popup(Styles.renderingMode, (int)mode, Styles.blendNames);
-		if (EditorGUI.EndChangeCheck())
-		{
-			m_MaterialEditor.RegisterPropertyChangeUndo("Rendering Mode");
-			blendMode.floatValue = (float)mode;
-		}
+		// EditorGUI.BeginChangeCheck();
+		// mode = (BlendMode)EditorGUILayout.Popup(Styles.renderingMode, (int)mode, Styles.blendNames);
+		// if (EditorGUI.EndChangeCheck())
+		// {
+		// 	m_MaterialEditor.RegisterPropertyChangeUndo("Rendering Mode");
+		// 	blendMode.floatValue = (float)mode;
+		// }
 
-		EditorGUI.showMixedValue = false;
+		// EditorGUI.showMixedValue = false;
 	}
 
 	void DoAlbedoArea(Material material)

@@ -42,6 +42,9 @@ public class PlaneReflection : MonoBehaviour {
 
     Material                    m_convolveMaterial;
 
+    [Tooltip("Weird glitch appear in editor when render the reflection. Disable it to restore Unity UI")]
+    public bool previewInEditor; //prevent the weir red glitch in editor
+
 #if UNITY_EDITOR
     void OnValidate() {
         OnEnable();
@@ -117,16 +120,25 @@ public class PlaneReflection : MonoBehaviour {
             return;
 
         //Debug.LogFormat("OnWillRenderObject: {0} from camera {1} (DepthMode: {2})", name, Camera.current.name, Camera.current.depthTextureMode);
-
+        
         if(Camera.current == Camera.main) {
             m_renderCamera = Camera.current;
-#if UNITY_EDITOR
-        } else if(UnityEditor.SceneView.currentDrawingSceneView && UnityEditor.SceneView.currentDrawingSceneView.camera == Camera.current) {
-            m_renderCamera = Camera.current;
-#endif
+        #if UNITY_EDITOR 
+        //! Weird red UI glitch appears here on this stage. 
+        // I added small bool to activate/deactivate the view render to get rid of it until I found a proper solution
+        }else if(UnityEditor.SceneView.currentDrawingSceneView 
+            && UnityEditor.SceneView.currentDrawingSceneView.camera == Camera.current
+            && previewInEditor
+            ){
+                 m_renderCamera = UnityEditor.SceneView.currentDrawingSceneView.camera;  
+        #endif
         } else {
             return;
         }
+
+       
+        
+     
 
         m_reflectionCamera = EnsureReflectionCamera(m_renderCamera);
         EnsureReflectionTexture();
@@ -402,7 +414,7 @@ m_reflectionCamera.transform.rotation = Quaternion.LookRotation(reflectedDir, sr
             m_reflectionCamera.CopyFrom(renderCamera);
 
             // Undo some thing we don't want copied.
-            m_reflectionCamera.ResetProjectionMatrix(); // definitely don't want to inherit an explicit projection matrix
+            // m_reflectionCamera.ResetProjectionMatrix(); // definitely don't want to inherit an explicit projection matrix
             m_reflectionCamera.renderingPath = renderingPath == RenderingPath.UsePlayerSettings ? m_renderCamera.actualRenderingPath : renderingPath;
             m_reflectionCamera.allowHDR = renderCamera.allowHDR;
             m_reflectionCamera.rect = new Rect(0f, 0f, 1f, 1f);
